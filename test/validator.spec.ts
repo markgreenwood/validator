@@ -1,9 +1,19 @@
-// const { expect } = require("chai");
 import { expect } from "chai";
-import validator from "../src/validator";
-import getOwnPropertyDescriptor = Reflect.getOwnPropertyDescriptor;
+import validatorWith from "../src/validator";
+import nonPositiveValidationRule from "../src/nonPositive";
+import nonDivisibleValidationRule from "../src/nonDivisible";
 
 describe("A validator", () => {
+  let validator: Function;
+
+  before(() => {
+    validator = validatorWith([
+      nonPositiveValidationRule,
+      nonDivisibleValidationRule(3, "error.three"),
+      nonDivisibleValidationRule(5, "error.five"),
+    ]);
+  });
+
   it("will return no errors for valid numbers", () => {
     // eslint-disable-next-line no-unused-expressions
     expect(validator(7)).to.be.empty;

@@ -1,15 +1,12 @@
-import nonPositiveValidationRule from "./nonPositive";
-import makeNonDivisibleValidationRule from "./nonDivisible";
+export interface rule {
+  (value: number, result: string[]): string[];
+}
 
-const validationRules = [
-  nonPositiveValidationRule,
-  makeNonDivisibleValidationRule(3, 'error.three'),
-  makeNonDivisibleValidationRule(5, 'error.five'),
-];
-
-export default function (value: number): string[] {
-  return validationRules.reduce(function(result, rule) {
-    rule(value, result);
-    return result;
-  }, []);
+export default function(validationRules: rule[]) {
+  return function(value: number): string[] {
+    return validationRules.reduce(function(result: string[], rule: rule) {
+      rule(value, result);
+      return result;
+    }, []);
+  };
 }
