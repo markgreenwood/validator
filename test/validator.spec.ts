@@ -1,24 +1,43 @@
 import { expect } from "chai";
-import validatorWith from "../src/validator";
-import nonPositiveValidationRule from "../src/nonPositive";
-import nonDivisibleValidationRule from "../src/nonDivisible";
+// import validatorWith from "../src/validator";
+// import nonPositiveValidationRule from "../src/nonPositive";
+// import nonDivisibleValidationRule from "../src/nonDivisible";
+import factoryWithConfiguration from "../src/factory";
 
 describe("A validation", () => {
   let validator: Function;
+  let configuration: any;
 
   context("using the default validation rules", () => {
     beforeEach(() => {
-      validator = validatorWith([
-        nonPositiveValidationRule,
-        nonDivisibleValidationRule(3, "error.three"),
-        nonDivisibleValidationRule(5, "error.five"),
-      ]);
+      configuration = function() {
+        configuration.callCount++;
+        configuration.args = Array.prototype.slice.call(arguments);
+        return [
+          { type: "nonPositive" },
+          { type: "nonDivisible", options: { divisor: 3, error: 'error.three' } },
+          { type: "nonDivisible", options: { divisor: 5, error: 'error.five' } },
+        ];
+      }
+      configuration.callCount = 0;
+
+      // @ts-ignore
+      const newValidator = factoryWithConfiguration(configuration);
+
+      // @ts-ignore
+      validator = newValidator('default');
+    });
+
+    it('will access the configuration to get the validation rules', () => {
+      expect(configuration.callCount).to.equal(1);
+      expect(configuration.args).to.deep.equal(['default']);
     });
 
     it("will return no errors for valid numbers", () => {
       // eslint-disable-next-line no-unused-expressions
       expect(validator(7)).to.be.empty;
     });
+
     describe("will return error.nonpositive for not strictly positive numbers", () => {
       it("like 0", () => {
         expect(validator(0)).to.include("error.nonpositive");

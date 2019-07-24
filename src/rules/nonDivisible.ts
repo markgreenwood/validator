@@ -1,4 +1,4 @@
-import { rule } from "./validator";
+import { rule } from "../validator";
 
 export default function(divisor: number, error: string): rule {
   return function(value: number, result: string[]): string[] {
