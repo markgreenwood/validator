@@ -1,31 +1,28 @@
-import { expect } from "chai";
-// import validatorWith from "../src/validator";
-// import nonPositiveValidationRule from "../src/nonPositive";
-// import nonDivisibleValidationRule from "../src/nonDivisible";
-import factoryWithConfiguration from "../src/factory";
+import chai, { expect } from "chai";
+import sinon, { SinonStub } from "sinon";
+import sinonChai from "sinon-chai";
+import factoryWithConfiguration, { ruleDescription } from "../src/factory";
+
+chai.use(sinonChai);
 
 describe("A validation", () => {
   let validator: Function;
-  let configuration: any;
 
   context("using the default validation rules", () => {
+    const configuration: SinonStub = sinon.stub();
+
     beforeEach(() => {
-      configuration = function() {
-        configuration.callCount++;
-        configuration.args = Array.prototype.slice.call(arguments);
-        return [
-          { type: "nonPositive" },
-          {
-            type: "nonDivisible",
-            options: { divisor: 3, error: "error.three" },
-          },
-          {
-            type: "nonDivisible",
-            options: { divisor: 5, error: "error.five" },
-          },
-        ];
-      };
-      configuration.callCount = 0;
+      configuration.returns([
+        { type: "nonPositive" },
+        {
+          type: "nonDivisible",
+          options: { divisor: 3, error: "error.three" },
+        },
+        {
+          type: "nonDivisible",
+          options: { divisor: 5, error: "error.five" },
+        },
+      ]);
 
       // @ts-ignore
       const newValidator = factoryWithConfiguration(configuration);
@@ -35,8 +32,8 @@ describe("A validation", () => {
     });
 
     it("will access the configuration to get the validation rules", () => {
-      expect(configuration.callCount).to.equal(1);
-      expect(configuration.args).to.deep.equal(["default"]);
+      expect(configuration).to.have.been.calledOnce;
+      expect(configuration).to.have.been.calledWithExactly("default");
     });
 
     it("will return no errors for valid numbers", () => {
@@ -76,19 +73,16 @@ describe("A validation", () => {
   });
 
   context("using the alternative validation rules", () => {
+    const configuration: SinonStub = sinon.stub();
+
     beforeEach(() => {
-      configuration = function() {
-        configuration.callCount++;
-        configuration.args = Array.prototype.slice.call(arguments);
-        return [
-          { type: "nonPositive" },
-          {
-            type: "nonDivisible",
-            options: { divisor: 11, error: "error.eleven" },
-          },
-        ];
-      };
-      configuration.callCount = 0;
+      configuration.returns([
+        { type: "nonPositive" },
+        {
+          type: "nonDivisible",
+          options: { divisor: 11, error: "error.eleven" },
+        },
+      ]);
 
       // @ts-ignore
       const newValidator = factoryWithConfiguration(configuration);
@@ -98,8 +92,8 @@ describe("A validation", () => {
     });
 
     it("will access the configuration to get the validation rules", () => {
-      expect(configuration.callCount).to.equal(1);
-      expect(configuration.args).to.deep.equal(["alternative"]);
+      expect(configuration).to.have.been.calledOnce;
+      expect(configuration).to.have.been.calledWithExactly("alternative");
     });
 
     it("will return no errors for valid numbers", () => {

@@ -2,7 +2,7 @@ import validatorWith, { rule } from "./validator";
 import nonPositiveValidationRule from "./rules/nonPositive";
 import nonDivisibleValidationRule from "./rules/nonDivisible";
 
-interface ruleDescription {
+export interface ruleDescription {
   type: string;
   options?: {
     divisor?: number,
