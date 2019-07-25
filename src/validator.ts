@@ -3,8 +3,8 @@ export interface rule {
 }
 
 export default function(validationRules: rule[]) {
-  return function(value: number): string[] {
-    return validationRules.reduce(function(result: string[], rule: rule) {
+  return (value: number): string[] => {
+    return validationRules.reduce((result: string[], rule: rule) => {
       rule(value, result);
       return result;
     }, []);

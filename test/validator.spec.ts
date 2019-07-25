@@ -1,7 +1,8 @@
+/* eslint-disable no-unused-expressions */
 import chai, { expect } from "chai";
 import sinon, { SinonStub } from "sinon";
 import sinonChai from "sinon-chai";
-import factoryWithConfiguration, { ruleDescription } from "../src/factory";
+import factoryWithConfiguration from "../src/factory";
 
 chai.use(sinonChai);
 
@@ -24,10 +25,7 @@ describe("A validation", () => {
         },
       ]);
 
-      // @ts-ignore
       const newValidator = factoryWithConfiguration(configuration);
-
-      // @ts-ignore
       validator = newValidator("default");
     });
 
@@ -37,7 +35,6 @@ describe("A validation", () => {
     });
 
     it("will return no errors for valid numbers", () => {
-      // eslint-disable-next-line no-unused-expressions
       expect(validator(7)).to.be.empty;
     });
 
@@ -84,10 +81,7 @@ describe("A validation", () => {
         },
       ]);
 
-      // @ts-ignore
       const newValidator = factoryWithConfiguration(configuration);
-
-      // @ts-ignore
       validator = newValidator("alternative");
     });
 
@@ -97,7 +91,6 @@ describe("A validation", () => {
     });
 
     it("will return no errors for valid numbers", () => {
-      // eslint-disable-next-line no-unused-expressions
       expect(validator(7)).to.be.empty;
     });
 
