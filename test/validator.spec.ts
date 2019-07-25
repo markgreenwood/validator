@@ -98,6 +98,10 @@ describe("A validation", () => {
       it("like 22", () => {
         expect(validator(22)).to.include("error.eleven");
       });
+
+      it("like 77", () => {
+        expect(validator(77)).to.include("error.eleven");
+      });
     });
   });
 });
