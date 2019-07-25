@@ -15,22 +15,28 @@ describe("A validation", () => {
         configuration.args = Array.prototype.slice.call(arguments);
         return [
           { type: "nonPositive" },
-          { type: "nonDivisible", options: { divisor: 3, error: 'error.three' } },
-          { type: "nonDivisible", options: { divisor: 5, error: 'error.five' } },
+          {
+            type: "nonDivisible",
+            options: { divisor: 3, error: "error.three" },
+          },
+          {
+            type: "nonDivisible",
+            options: { divisor: 5, error: "error.five" },
+          },
         ];
-      }
+      };
       configuration.callCount = 0;
 
       // @ts-ignore
       const newValidator = factoryWithConfiguration(configuration);
 
       // @ts-ignore
-      validator = newValidator('default');
+      validator = newValidator("default");
     });
 
-    it('will access the configuration to get the validation rules', () => {
+    it("will access the configuration to get the validation rules", () => {
       expect(configuration.callCount).to.equal(1);
-      expect(configuration.args).to.deep.equal(['default']);
+      expect(configuration.args).to.deep.equal(["default"]);
     });
 
     it("will return no errors for valid numbers", () => {
@@ -65,6 +71,45 @@ describe("A validation", () => {
 
       it("like 15", () => {
         expect(validator(15)).to.include("error.five");
+      });
+    });
+  });
+
+  context("using the alternative validation rules", () => {
+    beforeEach(() => {
+      configuration = function() {
+        configuration.callCount++;
+        configuration.args = Array.prototype.slice.call(arguments);
+        return [
+          { type: "nonPositive" },
+          {
+            type: "nonDivisible",
+            options: { divisor: 11, error: "error.eleven" },
+          },
+        ];
+      };
+      configuration.callCount = 0;
+
+      // @ts-ignore
+      const newValidator = factoryWithConfiguration(configuration);
+
+      // @ts-ignore
+      validator = newValidator("alternative");
+    });
+
+    it("will access the configuration to get the validation rules", () => {
+      expect(configuration.callCount).to.equal(1);
+      expect(configuration.args).to.deep.equal(["alternative"]);
+    });
+
+    it("will return no errors for valid numbers", () => {
+      // eslint-disable-next-line no-unused-expressions
+      expect(validator(7)).to.be.empty;
+    });
+
+    describe("will include error.eleven for numbers divisible by 11", () => {
+      it("like 22", () => {
+        expect(validator(22)).to.include("error.eleven");
       });
     });
   });
